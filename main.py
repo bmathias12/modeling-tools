@@ -4,8 +4,10 @@ from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
+from modutils import gains
 from modutils import plotting
 from modutils import quantiles
+
 
 RANDOM_STATE = 123
 
@@ -15,7 +17,7 @@ X, y = make_classification(
     n_informative=10,
     n_redundant=3,
     n_repeated=2,
-    class_sep=0.5,
+    class_sep=1.0,
     random_state=RANDOM_STATE
     )
 
@@ -34,10 +36,18 @@ plotting.plot_roc_curve(y_test, probs)
 plotting.plot_prediction_density(y_test, probs)
 
 # Check quantile functions
-bins = quantiles.get_bins(probs, q=10, adjust_endpoints=True)
+bins = quantiles.get_bins(probs, q=20, adjust_endpoints=True)
 deciles = quantiles.get_quantiles_from_bins(probs, bins)
 
 # Check that mean by decile is descending from 1 to 10
 d = pd.concat([pd.Series(probs), deciles], axis=1)
 d.columns = ['scores', 'deciles']
 d.groupby('deciles')['scores'].mean()
+
+
+
+# KS Table
+gains.ks_table(y_test, deciles)
+
+plotting.plot_ks(y_test, deciles, show_dist_segment=False)
+plotting.plot_ks(y_test, deciles, show_dist_segment=True)
