@@ -31,11 +31,11 @@ def plot_roc_curve(
         plt.show()
 
 def plot_prediction_density(
-    y,
-    scores,
-    title='Prediction Density',
-    figsize=(8,5),
-    saveloc=None):
+        y,
+        scores,
+        title='Prediction Density',
+        figsize=(8,5),
+        saveloc=None):
     """Function to plot the kernel density for model predictions"""
     
     class_set = sorted(set(y))
